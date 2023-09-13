@@ -1,0 +1,44 @@
+
+#red {
+    padding: 60px 60px;
+    
+    border-radius: 5px;
+    color: red;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background-color: red;
+}
+  #pink {
+    padding: 60px 60px;
+
+    border-radius: 5px;
+    color: pink;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background-color:pink;
+  }
+  #violet {
+    padding: 60px 60px;
+    
+    border-radius: 5px;
+    color: violet;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background-color: blueviolet;
+}
+.alternar button red 
+    body {background-color:red;
+}
+.alternar button pink
+   body{ background-color: pink;
+}
+alternar button violet
+    body{background-color:rgb(66, 5, 66);
+}
+
