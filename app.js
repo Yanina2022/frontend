@@ -3,15 +3,15 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+var session = require('express-session');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var videorouter = require('./routes/video');
+
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -19,26 +19,77 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/video',videoRouter);
+
+app.use(session({
+  secret:'vvckvjxkcvjxkvx',
+  resave: false,
+  saveUninitialized: true
+}));
 
 
 
 
-app.get('/prueba', function (req,res){
-  res.send('hola yanina soy tu pagina de prueba')
-})
-app.get('/destacados', function (req,res){
-  res.send('hola yanina soy tu pagina de destacados')
-})
-app.get('/galeria', function (req,res){
-  res.send('hola soy la galeria')
-})
+
+app.get('/',function(req,res){
+  const conocido = Boolean(req.session.nombre);
+
+  res.render('index',{
+    title:'sesiones en express.js',
+    conocido: conocido,
+    nombre: req.session.nombre
+  });
+});
+
+app.post('/ingresar', function (req,res){
+  console.log(req.body.nombre);
+
+if (req.body.nombre){
+  req.session.nombre = req.body.nombre
+}
+res.redirect('/');
+});
+
+app.get('/salir',function(req,res){
+  req.session.destroy();
+  res.redirect('/');
+});
+
+app.use(function(req,res,next){
+
+
+  if (!req.session.vistas){
+    req.session.vistas ={};
+}
+
+if (!req.session.vistas[req.originalUrl]){
+  req.session.vistas[req.originalUrl] =1;
+} else {
+  req.session.vistas[req.originalUrl]++;
+}
+console.log(req.session.vistas);
+
+next();
+});
+
+app.get('/nosotros',function(req,res){
+  res.render('pagina',{
+    nombre:'nosotros',
+    vistas:req.session.vistas[req.originalUrl]
+  });
+});
+
+app.get('/contacto',function(req,res){
+  res.render('pagina',{
+    nombre:'contacto',
+    vistas:req.session.vistas[req.originalUrl]
+  });
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
 
 // error handler
 app.use(function(err, req, res, next) {
